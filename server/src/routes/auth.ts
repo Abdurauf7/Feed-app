@@ -1,10 +1,10 @@
-import express from 'express'
+import express from 'express';
 
-import { body } from 'express-validator'
+import { body } from 'express-validator';
 
-import { signup, login} from '../controllers/auth'
+import { signup, login } from '../controllers/auth';
 
-import User from '../models/user'
+import User from '../models/user';
 
 const router = express.Router();
 

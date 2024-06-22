@@ -2,6 +2,16 @@ import mongoose from 'mongoose';
 
 const Schema = mongoose.Schema;
 
+export type UserModel = mongoose.Document & {
+  email: string;
+  password: string;
+  name: string;
+  status: string;
+  posts: Object[];
+  createdAt: string;
+  updatedAt: string;
+};
+
 const UserSchema = new Schema(
   {
     email: {
@@ -30,4 +40,5 @@ const UserSchema = new Schema(
   { timestamps: true }
 );
 
-export default mongoose.model('User', UserSchema);
+// export default mongoose.model('User', UserSchema);
+export default mongoose.model<UserModel>('User', UserSchema);

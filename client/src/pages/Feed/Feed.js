@@ -23,7 +23,7 @@ class Feed extends Component {
   };
 
   componentDidMount() {
-    fetch('http://localhost:8090/user/status', {
+    fetch('http://localhost:8088/user/status', {
       headers: {
         Authorization: 'Bearer ' + this.props.token,
       },
@@ -40,7 +40,7 @@ class Feed extends Component {
       .catch(this.catchError);
 
     this.loadPosts();
-    const socket = openSocket('http://localhost:8090');
+    const socket = openSocket('http://localhost:8088');
     socket.on('posts', (data) => {
       if (data.action === 'create') {
         this.addPost(data.post);
@@ -96,7 +96,7 @@ class Feed extends Component {
       page--;
       this.setState({ postPage: page });
     }
-    fetch('http://localhost:8090/feed/posts?page=' + page, {
+    fetch('http://localhost:8088/feed/posts?page=' + page, {
       headers: {
         Authorization: 'Bearer ' + this.props.token,
       },
@@ -122,7 +122,7 @@ class Feed extends Component {
   statusUpdateHandler = (event) => {
     event.preventDefault();
     let status = this.state.status;
-    fetch('http://localhost:8090/user/status', {
+    fetch('http://localhost:8088/user/status', {
       method: 'PUT',
       headers: {
         Authorization: 'Bearer ' + this.props.token,
@@ -173,10 +173,10 @@ class Feed extends Component {
     formData.append('content', content);
     formData.append('image', image);
 
-    let url = 'http://localhost:8090/feed/post';
+    let url = 'http://localhost:8088/feed/post';
     let method = 'POST';
     if (this.state.editPost) {
-      url = 'http://localhost:8090/feed/post/' + this.state.editPost._id;
+      url = 'http://localhost:8088/feed/post/' + this.state.editPost._id;
       method = 'PUT';
     }
 
@@ -236,7 +236,7 @@ class Feed extends Component {
 
   deletePostHandler = (postId) => {
     this.setState({ postsLoading: true });
-    fetch('http://localhost:8090/feed/post/' + postId, {
+    fetch('http://localhost:8088/feed/post/' + postId, {
       method: 'DELETE',
       headers: {
         Authorization: 'Bearer ' + this.props.token,

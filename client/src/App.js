@@ -60,7 +60,7 @@ class App extends Component {
     event.preventDefault();
     this.setState({ authLoading: true });
     const { email, password } = authData;
-    fetch('http://localhost:8090/auth/login', {
+    fetch('http://localhost:8088/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -109,7 +109,7 @@ class App extends Component {
     event.preventDefault();
     this.setState({ authLoading: true });
     const { email, name, password } = authData.signupForm;
-    fetch('http://localhost:8090/auth/signup', {
+    fetch('http://localhost:8088/auth/signup', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
