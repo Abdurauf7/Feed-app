@@ -11,10 +11,3 @@ namespace NodeJs {
     DB_NAME: string;
   }
 }
-
-declare namespace e {
-  export interface Request {
-    userId?: any;
-    file?: e.Multer.File;
-  }
-}
