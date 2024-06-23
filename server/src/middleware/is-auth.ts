@@ -2,6 +2,9 @@ import { Response, NextFunction } from 'express';
 import { CustomRequest } from '../types/auth';
 import jwt from 'jsonwebtoken';
 
+import configs from '../config/';
+const { JWT_SECRET } = configs.APP;
+
 export const isAuth = (
   req: CustomRequest,
   res: Response,
@@ -16,7 +19,7 @@ export const isAuth = (
   let decodedToken: any & { userId: string };
 
   try {
-    decodedToken = jwt.verify(token, `${process.env.DB_SECRET}`);
+    decodedToken = jwt.verify(token, `${JWT_SECRET}`);
   } catch (err: any) {
     err.message = '500 error while decode jwt';
     throw err;

@@ -1,16 +1,12 @@
 import fs from 'fs';
-import {
-  RequestHandler,
-  Request,
-  Response,
-  NextFunction,
-  Express,
-} from 'express';
+import { RequestHandler, Response, NextFunction } from 'express';
 import { validationResult } from 'express-validator';
 
 import path from 'path';
 import Post from '../models/post';
 import User from '../models/user';
+
+import { CustomRequest } from '../types/posts';
 
 export const getPosts: RequestHandler = async (req, res, next) => {
   const currentPage: number = parseInt(req.query.page as string, 10) || 1;
@@ -34,11 +30,6 @@ export const getPosts: RequestHandler = async (req, res, next) => {
     next(err);
   }
 };
-
-interface CustomRequest extends Request {
-  userId?: string;
-  file?: Express.Multer.File;
-}
 
 export const createPost = async (
   req: CustomRequest,
@@ -174,6 +165,6 @@ export const deletePost = async (
 };
 
 const clearImage = (filePath: string) => {
-  filePath = path.join(__dirname, '..', filePath);
+  filePath = path.join(__dirname, '../../', filePath);
   fs.unlink(filePath, (err) => console.log(err));
 };

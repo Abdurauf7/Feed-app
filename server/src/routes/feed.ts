@@ -37,7 +37,6 @@ router.get('/post/:postId', isAuth, getPost);
 
 router.put(
   '/post/:postId',
-  isAuth,
   [
     body('title', 'The title should be more than 5 character')
       .isLength({
@@ -52,6 +51,7 @@ router.put(
       .isString()
       .trim(),
   ],
+  isAuth,
   updatePost
 );
 

@@ -2,7 +2,6 @@
 import express, { Express, NextFunction, Request, Response } from 'express';
 import { json, urlencoded } from 'body-parser';
 import mongoose from 'mongoose';
-import dotenv from 'dotenv';
 import multer from 'multer';
 import path from 'path';
 
@@ -12,7 +11,9 @@ import userRoutes from './routes/user';
 import authRoutes from './routes/auth';
 
 // env configuration
-dotenv.config();
+
+import CONFIG from './config';
+const { APP, DB } = CONFIG;
 
 // configuration app
 const app: Express = express();
@@ -20,7 +21,7 @@ const app: Express = express();
 // Configuration with files
 const fileStorage = multer.diskStorage({
   destination(req, file, callback) {
-    callback(null, '../src/images');
+    callback(null, 'images');
   },
   filename(req, file, cb) {
     cb(null, new Date().toISOString() + '-' + file.originalname);
@@ -42,15 +43,11 @@ const fileFilter = (
     cb(null, false);
   }
 };
-console.log('dirname', path.join(__dirname, 'images'));
-app.use(
-  '../src/images',
-  express.static(path.join(__dirname, '../src', 'images'))
-);
+app.use('images', express.static(path.join(__dirname, 'src', 'images')));
 app.use(multer({ storage: fileStorage, fileFilter }).single('image'));
 
 // parsing json
-app.use(json());
+app.use(json({ limit: '10mb' }));
 app.use(urlencoded({ extended: true }));
 
 // cors
@@ -79,10 +76,11 @@ app.use((error: any, req: Request, res: Response, next: NextFunction) => {
 });
 
 // Connection to mongodb
+
 mongoose
-  .connect(`${process.env.DB_HOST}/${process.env.DB_NAME}`)
+  .connect(`${DB.HOST}:${DB.PORT}/${DB.DATABASE}`)
   .then(() => {
-    app.listen(process.env.PORT, () => {
+    app.listen(APP.PORT, () => {
       console.log(`[server]: Server is running`);
     });
   })

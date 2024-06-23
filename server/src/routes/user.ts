@@ -1,12 +1,13 @@
-import express from 'express'
-import { body } from 'express-validator'
+import express from 'express';
+import { body } from 'express-validator';
 
-import {getStatus, updateStatus} from '../controllers/user'
+import { getStatus, updateStatus } from '../controllers/user';
+import { isAuth } from '../middleware/is-auth';
 
-const router = express.Router()
+const router = express.Router();
 
-router.get('/status/', getStatus)
+router.get('/status', isAuth, getStatus);
 
-router.put('/status/',[body('status').trim().notEmpty()],updateStatus)
+router.put('/status', [body('status').trim().notEmpty()], isAuth, updateStatus);
 
-export default router
+export default router;

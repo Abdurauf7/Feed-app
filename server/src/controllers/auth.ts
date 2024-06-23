@@ -2,6 +2,9 @@ import { RequestHandler } from 'express';
 import { validationResult } from 'express-validator';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import configs from '../config/';
+
+const { JWT_SECRET } = configs.APP;
 
 import User from '../models/user';
 
@@ -48,7 +51,7 @@ export const login: RequestHandler = async (req, res, next) => {
         email: user?.email,
         userId: user?._id.toString(),
       },
-      `${process.env.DB_SECRET}`,
+      `${JWT_SECRET}`,
       { expiresIn: '1h' }
     );
     res.status(200).json({

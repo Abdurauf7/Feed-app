@@ -1,3 +1,4 @@
+import { Request } from 'express';
 export interface createPostIn {
   title: string;
   imageUrl: string;
@@ -16,4 +17,9 @@ export interface updatePostIn {
   posts: string[];
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface CustomRequest extends Request {
+  userId?: string;
+  file?: Express.Multer.File;
 }
