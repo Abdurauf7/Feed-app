@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const path = require('path');
 const multer = require('multer');
+
 const feedRoutes = require('./routes/feed');
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
@@ -32,8 +33,8 @@ const fileFilter = (req, file, cb) => {
 
 app.use(bodyParser.json()); // applications/json
 
-app.use('/images', express.static(path.join(__dirname, 'images')));
-app.use(multer({ storage: fileStorage, fileFilter }).single('image'));
+// app.use('/images', express.static(path.join(__dirname, 'images')));
+// app.use(multer({ storage: fileStorage, fileFilter }).single('image'));
 
 app.use((req, res, next) => {
   //   res.setHeader('Access-Control-Allow-Origin', 'codepen.io');

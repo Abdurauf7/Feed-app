@@ -34,24 +34,19 @@ export const signup: RequestHandler = async (req, res, next) => {
 export const login: RequestHandler = async (req, res, next) => {
   const { email, password } = req.body;
   try {
-    const user: { _id: string; email: string; password: string } =
-      await User.findOne({ email });
+    const user = await User.findOne({ email });
     if (!user) {
-      const error = new Error('A user with email not found');
-      error.message = '401 A user with email not found';
-      throw error;
+      return res.status(404).json({ message: 'User not Found' });
     }
-    const isEqual = await bcrypt.compare(password, user.password);
+    const isEqual = await bcrypt.compare(password, user?.password);
 
     if (!isEqual) {
-      const error = new Error('Wrong password');
-      error.message = '401 Wrong password';
-      throw error;
+      return res.status(401).json({ message: 'Wrong Password' });
     }
     const token = jwt.sign(
       {
-        email: user.email,
-        userId: user._id.toString(),
+        email: user?.email,
+        userId: user?._id.toString(),
       },
       `${process.env.DB_SECRET}`,
       { expiresIn: '1h' }
@@ -59,7 +54,7 @@ export const login: RequestHandler = async (req, res, next) => {
     res.status(200).json({
       message: 'Success',
       token,
-      userId: user._id.toString(),
+      userId: user?._id.toString(),
     });
     return;
   } catch (err: any) {

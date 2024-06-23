@@ -1,9 +1,6 @@
-import { Request, Response, NextFunction, RequestHandler } from 'express';
+import { Response, NextFunction } from 'express';
+import { CustomRequest } from '../types/auth';
 import jwt from 'jsonwebtoken';
-
-interface CustomRequest extends Request {
-  userId?: string;
-}
 
 export const isAuth = (
   req: CustomRequest,
@@ -11,10 +8,9 @@ export const isAuth = (
   next: NextFunction
 ) => {
   const authHeader = req.get('Authorization');
+
   if (!authHeader) {
-    const err = new Error('Not authenticated');
-    err.message = '401 not authenticated';
-    throw err;
+    return res.status(401).json({ message: 'Not authenticate' });
   }
   const token = authHeader.split(' ')[1];
   let decodedToken: any & { userId: string };
@@ -27,9 +23,7 @@ export const isAuth = (
   }
 
   if (!decodedToken) {
-    const err = new Error('Not authenticated');
-    err.message = '401 Not authenticated';
-    throw err;
+    return res.status(401).json({ message: 'Not authenticate' });
   }
   req.userId = decodedToken.userId;
   next();

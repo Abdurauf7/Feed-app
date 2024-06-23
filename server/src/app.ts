@@ -1,6 +1,6 @@
 // Third part Library
 import express, { Express, NextFunction, Request, Response } from 'express';
-import bodyParser from 'body-parser';
+import { json, urlencoded } from 'body-parser';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import multer from 'multer';
@@ -20,7 +20,7 @@ const app: Express = express();
 // Configuration with files
 const fileStorage = multer.diskStorage({
   destination(req, file, callback) {
-    callback(null, 'images');
+    callback(null, '../src/images');
   },
   filename(req, file, cb) {
     cb(null, new Date().toISOString() + '-' + file.originalname);
@@ -42,11 +42,16 @@ const fileFilter = (
     cb(null, false);
   }
 };
-app.use('/images', express.static(path.join(__dirname, 'images')));
+console.log('dirname', path.join(__dirname, 'images'));
+app.use(
+  '../src/images',
+  express.static(path.join(__dirname, '../src', 'images'))
+);
 app.use(multer({ storage: fileStorage, fileFilter }).single('image'));
 
 // parsing json
-app.use(bodyParser.json());
+app.use(json());
+app.use(urlencoded({ extended: true }));
 
 // cors
 app.use((req: Request, res: Response, next: NextFunction) => {
