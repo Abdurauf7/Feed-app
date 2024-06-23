@@ -18,6 +18,9 @@ const { APP, DB } = CONFIG;
 // configuration app
 const app: Express = express();
 
+// error Handlers
+import { errorsHandler } from './utils/helpers';
+
 // Configuration with files
 const fileStorage = multer.diskStorage({
   destination(req, file, callback) {
@@ -68,11 +71,12 @@ app.use('/auth', authRoutes);
 app.use('/user', userRoutes);
 
 //  Error handling
-app.use((error: any, req: Request, res: Response, next: NextFunction) => {
-  const status = error.statusCode || 500;
-  const message = error.message;
-  const data = error.data;
-  res.status(status).json({ message, data });
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  if (err.status) {
+    const error: any = errorsHandler(err.status);
+    return res.status(error.status).json(error);
+  }
+  return res.status(500).json({ message: 'Interval Server Error' });
 });
 
 // Connection to mongodb

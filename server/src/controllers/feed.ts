@@ -1,8 +1,8 @@
-import fs from 'fs';
 import { RequestHandler, Response, NextFunction } from 'express';
 import { validationResult } from 'express-validator';
 
-import path from 'path';
+import { clearImage } from '../utils/helpers';
+
 import Post from '../models/post';
 import User from '../models/user';
 
@@ -24,10 +24,7 @@ export const getPosts: RequestHandler = async (req, res, next) => {
       totalItems,
     });
   } catch (err: any) {
-    if (!err.statusCode) {
-      err.statusCode = 500;
-    }
-    next(err);
+    next({ status: 500, message: 'Internal server error' });
   }
 };
 
@@ -38,7 +35,7 @@ export const createPost = async (
 ) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(422).json({ message: 'Validation failed' });
+    return res.status(422).json({ message: 'Validation failed', errors });
   }
   if (!req.file) {
     return res.status(422).json({ message: 'No image provided' });
@@ -65,11 +62,8 @@ export const createPost = async (
       post: post,
       creator: { _id: user?._id, name: user?.name },
     });
-  } catch (error: any) {
-    if (!error) {
-      error.message = 'status 500';
-    }
-    next(error);
+  } catch (error) {
+    next({ status: 500, message: 'Internal server error' });
   }
 };
 export const getPost: RequestHandler<{ postId: string }> = async (
@@ -81,14 +75,11 @@ export const getPost: RequestHandler<{ postId: string }> = async (
   const post = await Post.findById(postId);
   try {
     if (!post) {
-      return res.status(404).json({ message: 'Could not find post' });
+      return next({ status: 404, message: 'Could not find post' });
     }
     res.status(200).json({ message: 'Post fetched', post });
   } catch (err: any) {
-    if (!err.statusCode) {
-      err.statusCode = 500;
-    }
-    next(err);
+    next({ status: 500, message: 'Internal server error' });
   }
 };
 
@@ -99,7 +90,7 @@ export const updatePost = async (
 ) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(422).json({ message: 'Validation failed' });
+    return res.status(422).json({ message: 'Validation failed', errors });
   }
   const { postId } = req.params;
   const { title, content, image } = req.body;
@@ -113,10 +104,10 @@ export const updatePost = async (
   try {
     const post = await Post.findById(postId).populate('creator');
     if (!post) {
-      return res.status(404).json({ message: 'Could not find post.' });
+      return next({ status: 404, message: 'Could not find post.' });
     }
     if (post?.creator?._id.toString() !== req?.userId) {
-      return res.status(403).json({ message: 'Not authorized!' });
+      return next({ status: 403, message: 'Not authorized!' });
     }
     if (imageUrl !== post.imageUrl) {
       clearImage(post.imageUrl);
@@ -128,10 +119,7 @@ export const updatePost = async (
     // io.getIo().emit('posts', { action: 'update', post: result });
     res.status(200).json({ message: 'Post updated', post: result });
   } catch (err: any) {
-    if (!err.statusCode) {
-      err.statusCode = 500;
-    }
-    next(err);
+    next({ status: 500, message: 'Internal server error' });
   }
 };
 
@@ -147,7 +135,7 @@ export const deletePost = async (
       return res.status(404).json({ message: 'Could not find post.' });
     }
     if (post.creator.toString() !== req.userId) {
-      return res.status(403).json({ message: 'Not authorized!' });
+      return next({ status: 403, message: 'Not authorized!' });
     }
     clearImage(post.imageUrl);
     await Post.findByIdAndDelete(postId);
@@ -156,15 +144,7 @@ export const deletePost = async (
     await user?.save();
     // io.getIo().emit('posts', { action: 'delete', post: postId });
     res.status(200).json({ message: 'Post Deleted' });
-  } catch (err: any) {
-    if (!err.statusCode) {
-      err.statusCode = 500;
-    }
-    next(err);
+  } catch (err) {
+    return next({ status: 500 });
   }
-};
-
-const clearImage = (filePath: string) => {
-  filePath = path.join(__dirname, '../../', filePath);
-  fs.unlink(filePath, (err) => console.log(err));
 };
