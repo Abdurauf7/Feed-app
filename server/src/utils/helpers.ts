@@ -30,6 +30,11 @@ export const errorsHandler = (status: number, message?: string | null) => {
         error: message,
       };
     default:
-      break;
+      return {
+        status,
+        type: 'ServerError',
+        message: { en: 'Internal server error' },
+        error: message,
+      };
   }
 };
