@@ -4,6 +4,7 @@ import { json, urlencoded } from 'body-parser';
 import mongoose from 'mongoose';
 import multer from 'multer';
 import path from 'path';
+import helmet from 'helmet';
 
 // Routes
 import feedRoutes from './routes/feed';
@@ -63,6 +64,8 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   next();
 });
+
+app.use(helmet());
 
 // Routes
 
