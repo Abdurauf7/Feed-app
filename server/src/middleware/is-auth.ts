@@ -1,5 +1,5 @@
 import { Response, NextFunction } from 'express';
-import { CustomRequest } from '../types/auth';
+import { CustomRequest } from '../types/posts';
 import jwt from 'jsonwebtoken';
 
 import configs from '../config/';

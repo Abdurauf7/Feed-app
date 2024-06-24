@@ -1,4 +1,5 @@
 import { Request } from 'express';
+
 export interface createPostIn {
   title: string;
   imageUrl: string;
