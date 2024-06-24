@@ -4,12 +4,12 @@ export interface createPostIn {
   title: string;
   imageUrl: string;
   content: string;
-  creator: updatePostIn;
+  creator: creatortIn;
   createdAt: Date;
   updatedAt: Date;
 }
 
-export interface updatePostIn {
+export interface creatortIn {
   _id: string;
   email: string;
   password: string;
