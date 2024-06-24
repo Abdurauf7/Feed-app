@@ -9,6 +9,7 @@ const { JWT_SECRET, SESSION_TIMEOUT } = configs.APP;
 import User from '../models/user';
 
 export const signup: RequestHandler = async (req, res, next) => {
+  console.log('HELLo')
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(422).json({ message: 'Validation failed', errors });
@@ -29,6 +30,7 @@ export const signup: RequestHandler = async (req, res, next) => {
 };
 
 export const login: RequestHandler = async (req, res, next) => {
+  console.log('login HELLo')
   const { email, password } = req.body;
   try {
     const user = await User.findOne({ email });

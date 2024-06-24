@@ -25,16 +25,6 @@ const UserSchema = new Schema({
       ref: 'Post',
     },
   ],
-  createdAt: {
-    type: Date,
-    required: true,
-    default: Date.now,
-  },
-  updatedAt: {
-    type: Date,
-    required: true,
-    default: Date.now,
-  },
-});
+},{timestamps:true});
 
 export default mongoose.model<createUserIn>('Users', UserSchema);

@@ -5,7 +5,12 @@ import multer from 'multer';
 import path from 'path';
 import helmet from 'helmet';
 import { corsHandler,fileStorage,fileFilter } from './utils/helpers'
-import runServer from './utils/db' 
+// import runServer from './utils/db' 
+import mongoose from 'mongoose';
+import CONFIG from './config';
+
+const { APP, DB } = CONFIG;
+
 
 // Routes
 import feedRoutes from './routes/feed';
@@ -38,4 +43,12 @@ app.use('/user', userRoutes);
 //  Error handling
 app.use(RouterErrorHandler);
 
-runServer()
+// runServer()
+mongoose
+.connect(`${DB.HOST}:${DB.PORT}/${DB.DATABASE}`)
+.then(() => {
+  app.listen(APP.PORT, () => {
+    console.log(`[server]: Server is running`);
+  });
+})
+.catch((err) => console.log('Error while connecting to mongodb', err));
