@@ -48,6 +48,10 @@ mongoose
 .connect(`${DB.HOST}:${DB.PORT}/${DB.DATABASE}`)
 .then(() => {
   app.listen(APP.PORT, () => {
+    const io = require('./socket').init(app)
+    io.on('connect',() =>{
+      console.log("Socket connection");
+    })
     console.log(`[server]: Server is running`);
   });
 })
